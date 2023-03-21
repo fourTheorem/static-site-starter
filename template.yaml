@@ -11,7 +11,7 @@ Description: >
 Parameters:
   BucketName:
     Type: String
-    Default: !sub 'frontend-starter-${AWS::AccountId}-${AWS::Region}'
+    Default: !Join ['', ['frontend-starter-', !Sub '${AWS::AccountId}-', '${AWS::Region}']]
 
 Resources:
   S3Bucket:
