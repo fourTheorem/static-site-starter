@@ -4,6 +4,24 @@ Frontend starter template for setting up serverless projects using [AWS SAM](htt
 
 The project configures a simple S3 bucket with a CloudFront distribution to serve static content. The project also includes scripts to deploy, update, and delete the application stack. 
 
+
+## Project structure 
+```
+project-root/
+│
+├─ frontend/
+│   ├─ package.json
+│   ├─ next.config.js
+│   └─ ... (other Next.js app files and directories)
+│
+├─ sam/
+│   ├─ template.yaml
+│   └─ ... (other AWS SAM files and directories)
+│
+├─ .gitignore
+└─ README.md
+```
+
 ## Project architecture diagram 
 
 
@@ -20,10 +38,18 @@ git clone https://github.com/fourTheorem/frontend-starter.git
 cd frontend-starter
 ```
 
-2. Build your frontend application and make sure the build files are in the `/dist` directory. 
+2. Build your frontend application in the `frontend` directory and make sure the build files are in the `/frontend/dist`. 
+
+If you want to build a next.js application, you can use the following commands:
+```bash
+cd frontend
+./setup.sh
+```
 
 3. Build and deploy the SAM template
 ```bash
+cd sam
+
 ## package the template
 `sam package --output-template-file packaged.yaml --s3-bucket <frontend-bucketName>`
 
@@ -43,6 +69,7 @@ chmod +x deploy.sh
 To build and deploy your application for the first time, run the following in your shell:
 
 ```bash
+cd sam 
 sam build
 sam deploy --guided
 ```
@@ -51,5 +78,6 @@ sam deploy --guided
 ## Remove application
 
 ```bash
+cd sam 
 sam remove --stack-name <stackName>
 ```
