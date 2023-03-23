@@ -190,8 +190,11 @@ $RECYCLE.BIN/
 *.lnk
 
 
-# Ignore hello-world/dist folder
-hello-world/dist
+# Ignore frontend/dist
+frontend/dist
+
+# Ignore sam/package.yaml 
+sam/packaged.yaml
 
 # Ignore top level tsconfig file (for VSCode config)
 tsconfig.json
