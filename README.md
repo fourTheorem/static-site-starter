@@ -9,9 +9,33 @@ The project configures a simple S3 bucket with a CloudFront distribution to serv
 
 ## Requirements 
 
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-* Node.js - [Install Node.js 18](https://nodejs.org/en/), including the NPM package management tool.
-* Docker - [Install Docker community edition](https://hub.docker.com/search/?type=edition&offering=community)
+- [AWS CLI](https://aws.amazon.com/cli/) installed and configured with your AWS account credentials.
+- [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) installed.
+- Requirements for your frontend application (ie. Node. NPM, etc.)
+
+## Setup process
+1. Clone the repository
+```bash 
+git clone https://github.com/fourTheorem/frontend-starter.git
+cd frontend-starter
+```
+
+2. Build your frontend application and make sure the build files are in the `/dist` directory. 
+
+3. Build and deploy the SAM template
+```bash
+## package the template
+`sam package --output-template-file packaged.yaml --s3-bucket <frontend-bucketName>`
+
+## deploy the template
+`sam deploy --template-file packaged.yaml --stack-name <stackName> --capabilities CAPABILITY_IAM`
+```
+
+4. Deploy your frontend to the S3 bucket
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
 
 
 ## Deploying the application
