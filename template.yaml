@@ -8,18 +8,13 @@ Description: >
   SAM template for frontend projects
 
 
-Parameters:
-  BucketName:
-    Type: String
-    Default: !Join ['', ['frontend-starter-', !Sub '${AWS::AccountId}-', '${AWS::Region}']]
-
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
     UpdateReplacePolicy: Delete
     Properties:
-      BucketName: !Ref BucketName
+      BucketName: !Sub 'frontend-starter-${AWS::AccountId}-${AWS::Region}'
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
