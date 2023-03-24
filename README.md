@@ -40,10 +40,10 @@ cd frontend-starter
 
 2. Build your frontend application in the `frontend` directory and make sure the build files are in the `/frontend/dist`. 
 
-If you want to build a next.js application, you can use the following commands:
+If you want to build an example frontend application, you can use the following commands:
 ```bash
 cd frontend
-./setup.sh
+./app-setup.sh
 ```
 
 3. Build and deploy the SAM template
