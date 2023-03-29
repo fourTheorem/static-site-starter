@@ -7,6 +7,22 @@ Description: >
 
   SAM template for frontend projects
 
+Parameters:
+  DomainName:
+    Type: String
+    Default: ''
+  ACMCertificateArn:
+    Type: String
+    Default: ''
+  UseCustomDomainName:
+    Type: String
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+
+Conditions:
+  UseCustomDomain: !Equals [ !Ref UseCustomDomainName, 'true' ]
 
 Resources:
   S3Bucket:
@@ -33,7 +49,6 @@ Resources:
     Properties:
       Bucket: !Ref S3Bucket
       PolicyDocument:
-      # Restricting access to cloudfront only.
         Statement:
           -
             Effect: Allow
@@ -57,17 +72,22 @@ Resources:
         DefaultRootObject: "index.html"
         Enabled: true
         HttpVersion: http2
-        # List of origins that Cloudfront will connect to
+        Aliases: !If
+          - UseCustomDomain
+          - - !Ref DomainName
+          - !Ref AWS::NoValue
+        ViewerCertificate: !If
+          - UseCustomDomain
+          - AcmCertificateArn: !Ref ACMCertificateArn
+            SslSupportMethod: sni-only
+          - !Ref AWS::NoValue
         Origins:
           - Id: s3-website
             DomainName: !GetAtt S3Bucket.DomainName
             S3OriginConfig:
-              # Restricting Bucket access through an origin access identity
               OriginAccessIdentity: 
                 Fn::Sub: 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
-        # To connect the CDN to the origins you need to specify behaviours
         DefaultCacheBehavior:
-          # Compress resources automatically ( gzip )
           Compress: 'true'
           AllowedMethods:
             - GET
@@ -78,4 +98,25 @@ Resources:
           TargetOriginId: s3-website
           ViewerProtocolPolicy : redirect-to-https
 
+  Route53RecordSet:
+    Type: "AWS::Route53::RecordSet"
+    Condition: UseCustomDomain
+    Properties:
+      HostedZoneName: !Sub '${DomainName}.'
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        HostedZoneId: !Select [ 1, !GetAtt CloudfrontDistribution.DomainName ]
+        DNSName: !GetAtt CloudfrontDistribution.DomainName
   
+  # Certificate:
+  #   Type: AWS::CertificateManager::Certificate
+  #   Properties:
+  #     DomainName: !Ref DomainName
+  #     ValidationMethod: DNS
+  #     SubjectAlternativeNames:
+  #       - !Sub 'www.${DomainName}'
+
+
+    
+    
