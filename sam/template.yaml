@@ -11,9 +11,9 @@ Parameters:
   DomainName:
     Type: String
     Default: ''
-  ACMCertificateArn:
-    Type: String
-    Default: ''
+  # ACMCertificateArn:
+  #   Type: String
+  #   Default: ''
   UseCustomDomainName:
     Type: String
     Default: 'false'
@@ -78,7 +78,7 @@ Resources:
           - !Ref AWS::NoValue
         ViewerCertificate: !If
           - UseCustomDomain
-          - AcmCertificateArn: !Ref ACMCertificateArn
+          - AcmCertificateArn: !Ref Certificate
             SslSupportMethod: sni-only
           - !Ref AWS::NoValue
         Origins:
@@ -97,6 +97,12 @@ Resources:
             QueryString: false
           TargetOriginId: s3-website
           ViewerProtocolPolicy : redirect-to-https
+    
+  MyHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Sub '${DomainName}.'
+
 
   Route53RecordSet:
     Type: "AWS::Route53::RecordSet"
@@ -106,17 +112,18 @@ Resources:
       Name: !Ref DomainName
       Type: A
       AliasTarget:
-        HostedZoneId: !Select [ 1, !GetAtt CloudfrontDistribution.DomainName ]
+        HostedZoneId: Z2FDTNDATAQYW2
         DNSName: !GetAtt CloudfrontDistribution.DomainName
   
-  # Certificate:
-  #   Type: AWS::CertificateManager::Certificate
-  #   Properties:
-  #     DomainName: !Ref DomainName
-  #     ValidationMethod: DNS
-  #     SubjectAlternativeNames:
-  #       - !Sub 'www.${DomainName}'
-
-
-    
-    
+  # Should be commented out if you already have a certificate 
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Condition: UseCustomDomain # && !Ref ACMCertificateArn check if cert arn exists
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+      SubjectAlternativeNames:
+        - !Sub 'www.${DomainName}'
+      DomainValidationOptions:
+        - DomainName: !Sub '${DomainName}'
+          HostedZoneId: !Ref MyHostedZone
