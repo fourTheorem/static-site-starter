@@ -81,3 +81,8 @@ sam deploy --guided
 cd sam 
 sam remove --stack-name <stackName>
 ```
+
+
+## Notes:
+- us-east-1 because CloudFront is global anyways and ACM is only available in us-east-1
+- Slic-watch must be installed 
