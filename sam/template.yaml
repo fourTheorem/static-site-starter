@@ -98,10 +98,10 @@ Resources:
           TargetOriginId: s3-website
           ViewerProtocolPolicy : redirect-to-https
     
-  MyHostedZone:
-    Type: AWS::Route53::HostedZone
-    Properties:
-      Name: !Sub '${DomainName}.'
+  # MyHostedZone:
+  #   Type: AWS::Route53::HostedZone
+  #   Properties:
+  #     Name: !Sub '${DomainName}.'
 
 
   Route53RecordSet:
@@ -122,8 +122,6 @@ Resources:
     Properties:
       DomainName: !Ref DomainName
       ValidationMethod: DNS
-      SubjectAlternativeNames:
-        - !Sub 'www.${DomainName}'
       DomainValidationOptions:
         - DomainName: !Sub '${DomainName}'
-          HostedZoneId: !Ref MyHostedZone
+          HostedZoneId: Z06722012THXDBONFCAWL
