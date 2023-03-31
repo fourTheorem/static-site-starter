@@ -1,7 +1,7 @@
 #!/bin/bash
 
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-AWS_REGION=$(aws configure get region)
+AWS_REGION=$AWS_REGION
 S3_BUCKET_NAME="frontend-starter-${AWS_ACCOUNT_ID}-${AWS_REGION}"
 
 echo "AWS Account ID: ${AWS_ACCOUNT_ID}"
