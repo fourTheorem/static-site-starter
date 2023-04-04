@@ -189,6 +189,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+##### TEMP #####
+frontend
 
 # Ignore frontend/dist
 frontend/dist

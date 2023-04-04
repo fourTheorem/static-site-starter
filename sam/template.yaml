@@ -11,18 +11,25 @@ Parameters:
   DomainName:
     Type: String
     Default: ''
-  # ACMCertificateArn:
-  #   Type: String
-  #   Default: ''
+  ACMCertificateArn:
+    Type: String
+    Default: ''
   UseCustomDomainName:
     Type: String
     Default: 'false'
     AllowedValues:
       - 'true'
       - 'false'
+  ExistingHostedZoneID:
+    Type: String
+    Default: ''
 
 Conditions:
   UseCustomDomain: !Equals [ !Ref UseCustomDomainName, 'true' ]
+  IsExistingHostedZoneIdEmpty: !Equals [!Ref ExistingHostedZoneID, '']
+  IsACMCertificateArnEmpty: !Equals [!Ref ACMCertificateArn, '']
+  CreateCertificate: !And [!Condition UseCustomDomain, !Condition IsACMCertificateArnEmpty]
+
 
 Resources:
   S3Bucket:
@@ -78,7 +85,7 @@ Resources:
           - !Ref AWS::NoValue
         ViewerCertificate: !If
           - UseCustomDomain
-          - AcmCertificateArn: !Ref Certificate
+          - AcmCertificateArn: !If [IsACMCertificateArnEmpty, !Ref Certificate, !Ref ACMCertificateArn]
             SslSupportMethod: sni-only
           - !Ref AWS::NoValue
         Origins:
@@ -98,30 +105,31 @@ Resources:
           TargetOriginId: s3-website
           ViewerProtocolPolicy : redirect-to-https
     
-  # MyHostedZone:
-  #   Type: AWS::Route53::HostedZone
-  #   Properties:
-  #     Name: !Sub '${DomainName}.'
-
+  MyHostedZone:
+    Type: AWS::Route53::HostedZone
+    Condition: UseCustomDomain
+    Properties:
+      Name: !Sub '${DomainName}.'
 
   Route53RecordSet:
     Type: "AWS::Route53::RecordSet"
     Condition: UseCustomDomain
     Properties:
-      HostedZoneName: !Sub '${DomainName}.'
+      HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref MyHostedZone, !Ref ExistingHostedZoneID]
       Name: !Ref DomainName
       Type: A
       AliasTarget:
         HostedZoneId: Z2FDTNDATAQYW2
         DNSName: !GetAtt CloudfrontDistribution.DomainName
+
   
   # Should be commented out if you already have a certificate 
   Certificate:
     Type: AWS::CertificateManager::Certificate
-    Condition: UseCustomDomain # && !Ref ACMCertificateArn check if cert arn exists
+    Condition: CreateCertificate 
     Properties:
       DomainName: !Ref DomainName
       ValidationMethod: DNS
       DomainValidationOptions:
         - DomainName: !Sub '${DomainName}'
-          HostedZoneId: Z06722012THXDBONFCAWL
+          HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref MyHostedZone, !Ref ExistingHostedZoneID]
