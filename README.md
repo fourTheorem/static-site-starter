@@ -24,6 +24,11 @@ project-root/
 
 ## Project architecture diagram 
 
+![](frontend-starter.png)
+
+<!-- display frontend-starter.png -->
+
+
 
 ## Requirements 
 
