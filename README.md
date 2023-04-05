@@ -46,7 +46,12 @@ cd frontend
 ./setup.sh
 ```
 
-3. Build and deploy the SAM template
+3. [Add Slic-watch to your AWS account](https://github.com/fourTheorem/slic-watch#getting-started-with-aws-sam-cdk-or-cloudformation_)
+
+Make sure you add it to the us-east-1 region. This SAM template must be deployed in that region. 
+
+
+4. Build and deploy the SAM template
 ```bash
 cd sam
 
@@ -57,8 +62,10 @@ cd sam
 `sam deploy --template-file packaged.yaml --stack-name <stackName> --capabilities CAPABILITY_IAM`
 ```
 
-4. Deploy your frontend to the S3 bucket
+5. Deploy your frontend to the S3 bucket
 ```bash
+# Set Region: CloudFront is global anyways and ACM is only available in us-east-1
+AWS_REGION=us-east-1 
 chmod +x deploy.sh
 ./deploy.sh
 ```
@@ -82,7 +89,3 @@ cd sam
 sam remove --stack-name <stackName>
 ```
 
-
-## Notes:
-- us-east-1 because CloudFront is global anyways and ACM is only available in us-east-1
-- Slic-watch must be installed 
