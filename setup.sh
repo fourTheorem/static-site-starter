@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# A simple setup script to create a Vue.js app.
+# Setup React SPA with Vite
 
 # Check if Node.js and npm are installed
 if ! command -v node &> /dev/null || ! command -v npm &> /dev/null; then
@@ -8,29 +8,20 @@ if ! command -v node &> /dev/null || ! command -v npm &> /dev/null; then
   exit 1
 fi
 
-# Check if Vue CLI is installed, and install it if it's not
-if ! command -v vue &> /dev/null; then
-  echo "Installing Vue CLI..."
-  npm install -g @vue/cli
+# Check if Vite is installed
+if ! command -v vite &> /dev/null; then
+  echo "Vite is not installed. Installing Vite..."
+  npm install -g vite
 fi
 
-# Create a Vue 3 app inside the frontend directory
-echo "Creating a Vue 3 app..."
-vue create frontend
+# Create React project in frontend
+echo "Creating a React app..."
+npm create vite@latest frontend -- --template react
 
-# Configure Vue to output to the /dist directory
-echo "Updating Vue build output path to /dist directory..."
+# Install dependencies and build app
+echo "Installing dependencies and building the React app..."
 cd frontend
-mkdir dist
-cat > vue.config.js << EOL
-module.exports = {
-  outputDir: "dist"
-}
-EOL
-
-# Install dependencies and build the Vue app
-echo "Installing dependencies and building the Vue app..."
 npm install
 npm run build
 
-echo "Vue 3 app setup complete."
+echo "React SPA setup complete."
