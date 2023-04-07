@@ -131,3 +131,13 @@ Resources:
       DomainValidationOptions:
         - DomainName: !Sub '${DomainName}'
           HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref MyHostedZone, !Ref ExistingHostedZoneID]
+
+  InternetMonitor:
+    Type: AWS::InternetMonitor::Monitor
+    Properties:
+      MaxCityNetworksToMonitor: 100
+      MonitorName: frontend-starter-monitor
+      Resources:
+        - !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistribution.Id}
+      Status: ACTIVE
+
