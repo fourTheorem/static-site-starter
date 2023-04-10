@@ -1,18 +1,19 @@
-# Frontend Starter 
+# Static Site Starter 
 
-Frontend starter template for setting up serverless projects using [AWS SAM](https://aws.amazon.com/serverless/sam/).
+A static site starter template for setting up serverless projects using [AWS SAM](https://aws.amazon.com/serverless/sam/).
 
-The project configures a simple S3 bucket with a CloudFront distribution to serve static content. The project also includes scripts to deploy, update, and delete the application stack. 
+The project configures an S3 bucket with a CloudFront distribution to serve static content. The project also includes scripts to deploy, update, and delete the application stack. 
 
 
 ## Project structure 
+The suggested project structure is as follows, where `frontend` contains your frontend application source code and build directory:
+
 ```
 project-root/
 │
 ├─ frontend/
 │   ├─ package.json
-│   ├─ next.config.js
-│   └─ ... (other Next.js app files and directories)
+│   └─ ... (other frontend files and directories)
 │
 ├─ sam/
 │   ├─ template.yaml
