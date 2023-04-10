@@ -52,8 +52,6 @@ cd frontend
 
 3. Build and deploy the SAM template
 ```bash
-cd sam
-
 ## package the template
 `sam build`
 

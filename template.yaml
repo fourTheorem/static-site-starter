@@ -120,7 +120,6 @@ Resources:
       AliasTarget:
         HostedZoneId: Z2FDTNDATAQYW2
         DNSName: !GetAtt CloudfrontDistribution.DomainName
-
   
   Certificate:
     Type: AWS::CertificateManager::Certificate
@@ -141,3 +140,7 @@ Resources:
         - !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistribution.Id}
       Status: ACTIVE
 
+Outputs:
+  CloudfrontDistribution:
+    Description: 'Cloudfront Domain Name'
+    Value: !GetAtt CloudfrontDistribution.DomainName
