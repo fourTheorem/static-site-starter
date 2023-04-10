@@ -14,18 +14,15 @@ project-root/
 ├─ frontend/
 │   ├─ package.json
 │   └─ ... (other frontend files and directories)
-│
-├─ sam/
-│   ├─ template.yaml
-│   └─ ... (other AWS SAM files and directories)
-│
+├─ template.yaml
+├─ ... (other AWS SAM files and directories)
 ├─ .gitignore
 └─ README.md
 ```
 
 ## Project architecture diagram 
 
-![](frontend-starter.png)
+![Static site starter architecture diagram](architecture digram.png)
 
 <!-- display frontend-starter.png -->
 
