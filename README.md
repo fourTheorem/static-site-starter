@@ -24,11 +24,15 @@ project-root/
 
 ## Project architecture diagram 
 
-![Static site starter architecture diagram](architecture digram.png)
+![Static site starter architecture diagram](architecture-diagram.png)
 
-<!-- display frontend-starter.png -->
+A CloudFront distribution serves static content using the S3 bucket as the origin. The CloudFront distribution is configured to use the S3 bucket as the origin. These resources are always provisioned. 
 
+Optionally users can can configure the template to use a custom domain name. If the user provides a Route53 Hosted Zone ID the template will edit an existing hosted zone. If the user does not provide a Route53 Hosted Zone ID the template will create a new one. An ACM certificate is created for the custom domain name which edits the hosted zone to add an Alias record for the CloudFront distribution.
 
+CloudWatch Internet Monitor is used to monitor the health of the domain name. If the domain name does not respond to a request 3 times, the CloudWatch Internet Monitor will trigger an alarm. 
+
+Although a frontend appliation is not included in the frontend starter 
 
 ## Requirements 
 
