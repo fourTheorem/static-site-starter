@@ -37,6 +37,8 @@ Resources:
     UpdateReplacePolicy: Delete
     Properties:
       BucketName: !Sub 'frontend-starter-${AWS::AccountId}-${AWS::Region}'
+      VersioningConfiguration:
+        Status: Enabled
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
