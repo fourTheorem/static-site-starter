@@ -106,7 +106,7 @@ Resources:
           TargetOriginId: s3-website
           ViewerProtocolPolicy : redirect-to-https
     
-  MyHostedZone:
+  DomainHostedZone:
     Type: AWS::Route53::HostedZone
     Condition: UseCustomDomain
     Properties:
@@ -116,7 +116,7 @@ Resources:
     Type: "AWS::Route53::RecordSet"
     Condition: UseCustomDomain
     Properties:
-      HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref MyHostedZone, !Ref ExistingHostedZoneID]
+      HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref DomainHostedZone, !Ref ExistingHostedZoneID]
       Name: !Ref DomainName
       Type: A
       AliasTarget:
@@ -131,7 +131,7 @@ Resources:
       ValidationMethod: DNS
       DomainValidationOptions:
         - DomainName: !Sub '${DomainName}'
-          HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref MyHostedZone, !Ref ExistingHostedZoneID]
+          HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref DomainHostedZone, !Ref ExistingHostedZoneID]
 
   InternetMonitor:
     Type: AWS::InternetMonitor::Monitor
