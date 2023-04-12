@@ -90,3 +90,7 @@ cd sam
 sam remove --stack-name <stackName>
 ```
 
+# Costs
+When using this template, you will be billed depending on the number of requests to the S3 bucket and CloudFront distribution, and the number of times the CloudWatch Internet Monitor checks the CloudFront distribution. Cloudfront has a free tier of 10 million HTTPS requests per month. 
+
+For more information here is the documentation for [S3 Pricing](https://aws.amazon.com/s3/pricing/), [CloudFront Pricing](https://aws.amazon.com/cloudfront/pricing/), and [Route53 Pricing](https://aws.amazon.com/route53/pricing/).
