@@ -32,7 +32,7 @@ Optionally users can can configure the template to use a custom domain name. If 
 
 CloudWatch Internet Monitor is used to monitor the health of the domain name. If the domain name does not respond to a request 3 times, the CloudWatch Internet Monitor will trigger an alarm. 
 
-Although a frontend appliation is not included in the frontend starter 
+Although a frontend application is not included in the frontend starter 
 
 ## Requirements 
 
