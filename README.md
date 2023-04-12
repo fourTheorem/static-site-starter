@@ -39,6 +39,8 @@ Although a frontend appliation is not included in the frontend starter
 - [AWS CLI](https://aws.amazon.com/cli/) installed and configured with your AWS account credentials.
 - [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) installed.
 
+Using AWS Certificate Manager with a CloudFront distributions requires that the [stack be deployed in the `us-east-1` region](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cnames-and-https-requirements.html). Since CloudFront is a global service, the distribution will be available in all regions and performant for users in all regions, for this reason the SAM template **must** be deployed in the `us-east-1` region
+
 ## Setup process
 1. Clone the repository
 ```bash 
@@ -46,15 +48,7 @@ git clone https://github.com/fourTheorem/frontend-starter.git
 cd frontend-starter
 ```
 
-2. Build your frontend application in the `frontend` directory and make sure the build files are in the `/frontend/dist`. 
-
-If you want to build a React.js application, you can use the following commands:
-```bash
-cd frontend
-./setup.sh
-```
-
-3. Build and deploy the SAM template
+2. Build and deploy the SAM template
 ```bash
 ## package the template
 `sam build`
@@ -64,11 +58,18 @@ cd frontend
 `sam deploy --guided`
 ```
 
+3. Build your frontend application in the `frontend` directory and make sure the build files are in the `/frontend/dist`. 
+
+
+This starter template can host any static websites or single page applications (like React). For examples on setting up a frontend using a framework such as React or Vue, you can view the [Vite Docs](https://vitejs.dev/guide/).
+
 4. Deploy your frontend to the S3 bucket
 ```bash
 chmod +x deploy.sh
 ./deploy.sh
 ```
+
+This script assumes that your frontend build files are in the `/frontend/dist` directory. If your frontend build files are in a different directory, you can edit the `deploy.sh` script to point to the correct directory.
 
 
 ## Deploying the application

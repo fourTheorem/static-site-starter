@@ -10,18 +10,22 @@ Parameters:
   DomainName:
     Type: String
     Default: ''
+    Description: 'Custom domain name for the website, e.g. www.example.com'
   ACMCertificateArn:
     Type: String
     Default: ''
+    Description: 'ARN of an existing ACM certificate for the custom domain name. If you already have a certificate in ACM, you can use it here. If you leave this field empty, a new certificate will be created for you.'
   UseCustomDomainName:
     Type: String
     Default: 'false'
     AllowedValues:
       - 'true'
       - 'false'
+    Description: 'Use a custom domain name for the website'
   ExistingHostedZoneID:
     Type: String
     Default: ''
+    Description: 'Hosted Zone ID of an existing domain name. If you already have a hosted zone in Route53, you can use it here. If you leave this field empty, a new hosted zone will be created for you.'
 
 Conditions:
   UseCustomDomain: !Equals [ !Ref UseCustomDomainName, 'true' ]
@@ -33,8 +37,8 @@ Conditions:
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Delete
-    UpdateReplacePolicy: Delete
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName: !Sub 'frontend-starter-${AWS::AccountId}-${AWS::Region}'
       VersioningConfiguration:
@@ -62,15 +66,29 @@ Resources:
             Effect: Allow
             Action: 's3:GetObject'
             Resource:
-              - !Sub "arn:aws:s3:::${S3Bucket}/*"
+              - !Sub ${S3Bucket.Arn}/*
+            # Principal:
+            #   AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}"
             Principal:
-              AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}"
+              Service: cloudfront.amazonaws.com
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistribution}
 
-  CloudFrontOriginAccessIdentity:
-    Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
-    Properties:
-      CloudFrontOriginAccessIdentityConfig:
-        Comment: 'Serverless website OA'
+  # CloudFrontOriginAccessIdentity:
+  #   Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+  #   Properties:
+  #     CloudFrontOriginAccessIdentityConfig:
+  #       Comment: 'Serverless website OA'
+
+  CloudFrontOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties: 
+      OriginAccessControlConfig:
+        Name: !Ref AWS::StackName
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
 
   CloudfrontDistribution:
     Type: "AWS::CloudFront::Distribution"
@@ -93,8 +111,8 @@ Resources:
           - Id: s3-website
             DomainName: !GetAtt S3Bucket.DomainName
             S3OriginConfig:
-              OriginAccessIdentity: 
-                Fn::Sub: 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
         DefaultCacheBehavior:
           Compress: 'true'
           AllowedMethods:

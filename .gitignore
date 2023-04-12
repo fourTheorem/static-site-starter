@@ -200,3 +200,6 @@ sam/packaged.yaml
 
 # Ignore top level tsconfig file (for VSCode config)
 tsconfig.json
+
+# Ignore setup script (dev)
+setup.sh
