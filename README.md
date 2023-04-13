@@ -91,6 +91,9 @@ sam remove --stack-name <stackName>
 ```
 
 # Costs
-When using this template, you will be billed depending on the number of requests to the S3 bucket and CloudFront distribution, and the number of times the CloudWatch Internet Monitor checks the CloudFront distribution. Cloudfront has a free tier of 10 million HTTPS requests per month. 
+When using this template, you will be billed depending on the number of requests to the S3 bucket and CloudFront distribution, and the number of times the CloudWatch Internet Monitor checks the CloudFront distribution. For small websites that won't receive heavy traffic most of these services will fall under the free tier.
 
-For more information here is the documentation for [S3 Pricing](https://aws.amazon.com/s3/pricing/), [CloudFront Pricing](https://aws.amazon.com/cloudfront/pricing/), and [Route53 Pricing](https://aws.amazon.com/route53/pricing/).
+It is worth noting that CloudWatch Internet Monitor is the most expensive service by far for hosting a small site. 
+
+Here is a sample cost estimate for a website with 1GB of static assets that recieves 1000 views per month:
+https://calculator.aws/#/estimate?id=dcf37a539e4761fa0af292a5858f17c1967275bf
