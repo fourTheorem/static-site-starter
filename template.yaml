@@ -15,20 +15,13 @@ Parameters:
     Type: String
     Default: ''
     Description: 'ARN of an existing ACM certificate for the custom domain name. If you already have a certificate in ACM, you can use it here. If you leave this field empty, a new certificate will be created for you.'
-  UseCustomDomainName:
-    Type: String
-    Default: 'false'
-    AllowedValues:
-      - 'true'
-      - 'false'
-    Description: 'Use a custom domain name for the website'
   ExistingHostedZoneID:
     Type: String
     Default: ''
     Description: 'Hosted Zone ID of an existing domain name. If you already have a hosted zone in Route53, you can use it here. If you leave this field empty, a new hosted zone will be created for you.'
 
 Conditions:
-  UseCustomDomain: !Equals [ !Ref UseCustomDomainName, 'true' ]
+  UseCustomDomain: !Not [!Equals [!Ref DomainName, '']]
   IsExistingHostedZoneIdEmpty: !Equals [!Ref ExistingHostedZoneID, '']
   IsACMCertificateArnEmpty: !Equals [!Ref ACMCertificateArn, '']
   CreateCertificate: !And [!Condition UseCustomDomain, !Condition IsACMCertificateArnEmpty]
