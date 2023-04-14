@@ -24,7 +24,7 @@ project-root/
 
 ## Project architecture diagram 
 
-![Static site starter architecture diagram](architecture-diagram.png)
+![Static site starter architecture diagram](architecture-diagrams/architecture.png)
 
 A CloudFront distribution serves static content using the S3 bucket as the origin. The CloudFront distribution is configured to use the S3 bucket as the origin. These resources are always provisioned. 
 
@@ -97,3 +97,7 @@ It is worth noting that CloudWatch Internet Monitor is the most expensive servic
 
 Here is a sample cost estimate for a website with 1GB of static assets that recieves 1000 views per month:
 https://calculator.aws/#/estimate?id=dcf37a539e4761fa0af292a5858f17c1967275bf
+
+
+## Deploying an application without a custom domain name 
+
