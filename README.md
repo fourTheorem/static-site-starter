@@ -100,4 +100,46 @@ https://calculator.aws/#/estimate?id=dcf37a539e4761fa0af292a5858f17c1967275bf
 
 
 ## Deploying an application without a custom domain name 
+This is the simplest way to deploy an application.
+![minimal architecture diagram](architecture-diagrams/minimal.png)
 
+
+1. Set the CloudFormation parameters 'DomainName', 'ACMCertificateArn', and 'ExistingHostedZoneID' to empty strings
+2. Deploy the stack 
+3. Access the website at the CloudFront distribution url outputted from the CloudFormation stack
+
+
+## Deploying an application using a DNS hosted zone that is not managed by Route53
+![external dns architecture diagram](architecture-diagrams/external-dns.png)
+
+1. Set the CloudFormation parameter 'DomainName' to the subdomain of your app (eg. 'example.com')
+2. Set the CloudFormation parameters 'ACMCertificateArn' and 'ExistingHostedZoneID' to empty strings
+3. Deploy the template
+4. Log into the DNS registrar to access the domain name's hosted zone
+5. Create a new CNAME record for the domain name that points to the CloudFront distribution url (this is an output of the CloudFormation stack)
+6. Validate the domain name:
+  - Go to the ACM console after the stack has been deployed
+  - Localte a newly creatd certificate for the domain name
+  - Click the 'Actions' button and select 'Validate certificate'
+  - Follow the instructions to validate the domain name manually
+
+
+These changes will take a few minutes to propagate, then you should be able to access the website at `example.com` when you deploy your site to the S3 frontend bucket.
+
+## Deploying your application as a subdomain where the apex domain name hosted zone is managed by a 3rd party registrar
+
+![subdomain architecture diagram](architecture-diagrams/subdomain-external-dns.png)
+
+
+1. Set the CloudFormation parameter 'DomainName' to the subdomain of your app (eg. 'subdomain.example.com')
+2. Deploy the template
+2. Log into the DNS registrar for the apex domain name
+3. Create a CNAME record for the subdomain that points to the CloudFront distribution url (this is an output of the CloudFormation stack)
+
+The new record's values should look like this:
+```
+Name: subdomain.example.com
+Type: CNAME
+Value: dxxxxxxxxxxxxx.cloudfront.net
+```
+These changes will take a few minutes to propagate, then you should be able to access the website at `subdomain.example.com` when you deploy your site to the S3 frontend bucket.
