@@ -1,0 +1,12 @@
+{
+  "project_name": "My Project",
+  "project_description": "Project description",
+  "_copy_without_render": [
+    "*.png",
+    "*.jpg",
+    "*.jpeg",
+    "*.gif",
+    "*.svg",
+    "*.ico"
+]
+}
