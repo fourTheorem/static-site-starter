@@ -1,4 +1,6 @@
-# Static Site Starter 
+# {{ cookiecutter.project_name }}
+
+{{ cookiecutter.project_description }}
 
 A static site starter template for setting up serverless projects using [AWS SAM](https://aws.amazon.com/serverless/sam/).
 
