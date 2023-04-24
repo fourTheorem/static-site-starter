@@ -52,6 +52,20 @@ sam init --location https://github.com/fourTheorem/frontend-starter.git
 cd <your project name> 
 ```
 
+If you want to create a project from this template locally:
+```bash
+git clone https://github.com/fourTheorem/frontend-starter.git
+cd frontend-starter
+zip -r {{cookiecutter.project_name}}.zip .  
+# cd to location where you want to create the project
+sam init --location /path/to/{{cookiecutter.project_name}}.zip
+# You will now be prompted to set cookiecutter template values
+# Please provide values for the following parameters:
+#   project_name [your project name]:
+#   project_description [Project description]:
+cd <your project name> 
+```
+
 2. Build and deploy the SAM template
 ```bash
 ## package the template
