@@ -1,6 +1,4 @@
-# {{ cookiecutter.project_name }}
-
-{{ cookiecutter.project_description }}
+# Static site starter 
 
 The project includes an [AWS SAM](https://aws.amazon.com/serverless/sam/) template that configures an S3 bucket with a CloudFront distribution to serve static content. The project also includes scripts to deploy, update, and delete the application stack. 
 
