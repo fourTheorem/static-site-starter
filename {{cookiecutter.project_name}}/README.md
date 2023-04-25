@@ -44,7 +44,7 @@ Using AWS Certificate Manager with a CloudFront distributions requires that the 
 ## Setup process
 1. Initialise the project using the AWS SAM CLI
 ```bash 
-sam init --location https://github.com/fourTheorem/frontend-starter.git
+sam init --location https://github.com/fourTheorem/static-site-starter.git
 # You will now be prompted to set cookiecutter template values
 # Please provide values for the following parameters:
 #   project_name [your project name]:
@@ -54,8 +54,8 @@ cd <your project name>
 
 If you want to create a project from this template locally:
 ```bash
-git clone https://github.com/fourTheorem/frontend-starter.git
-cd frontend-starter
+git clone https://github.com/fourTheorem/static-site-starter.git
+cd static-site-starter
 zip -r {{cookiecutter.project_name}}.zip .  
 # cd to location where you want to create the project
 sam init --location /path/to/{{cookiecutter.project_name}}.zip
@@ -127,7 +127,7 @@ This is the simplest way to deploy an application.
 3. Access the website at the CloudFront distribution url outputted from the CloudFormation stack
 
 
-## Deploying an application using a DNS hosted zone that is not managed by Route53
+## Deploying an application using a domain name hosted zone is managed by a 3rd party registrar
 ![external dns architecture diagram](architecture-diagrams/external-dns.png)
 
 1. Set the CloudFormation parameter 'DomainName' to the subdomain of your app (eg. 'example.com')

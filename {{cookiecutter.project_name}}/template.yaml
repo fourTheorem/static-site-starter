@@ -33,7 +33,7 @@ Resources:
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
-      BucketName: !Sub 'frontend-starter-${AWS::AccountId}-${AWS::Region}'
+      BucketName: !Sub 'site-${AWS::AccountId}-${AWS::Region}'
       VersioningConfiguration:
         Status: Enabled
       BucketEncryption:
@@ -148,7 +148,7 @@ Resources:
     Type: AWS::InternetMonitor::Monitor
     Properties:
       MaxCityNetworksToMonitor: 100
-      MonitorName: frontend-starter-monitor
+      MonitorName: site-monitor
       Resources:
         - !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistribution.Id}
       Status: ACTIVE

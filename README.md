@@ -42,7 +42,7 @@ Using AWS Certificate Manager with a CloudFront distributions requires that the 
 ## Setup process
 1. Initialise the project using the AWS SAM CLI
 ```bash 
-sam init --location https://github.com/fourTheorem/frontend-starter.git
+sam init --location https://github.com/fourTheorem/static-site-starter.git
 # You will now be prompted to set cookiecutter template values
 # Please provide values for the following parameters:
 #   project_name [your project name]:
