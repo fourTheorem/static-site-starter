@@ -22,15 +22,16 @@ project-root/
 
 ## Project architecture diagram 
 
-![Static site starter architecture diagram](architecture-diagrams/architecture.png)
+![Static site starter architecture diagram](./%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/architecture.png)
 
-A CloudFront distribution serves static content using the S3 bucket as the origin. The CloudFront distribution is configured to use the S3 bucket as the origin. These resources are always provisioned. 
 
-Optionally users can can configure the template to use a custom domain name. If the user provides a Route53 Hosted Zone ID the template will edit an existing hosted zone. If the user does not provide a Route53 Hosted Zone ID the template will create a new one. An ACM certificate is created for the custom domain name which edits the hosted zone to add an Alias record for the CloudFront distribution.
+The template provisions a CloudFront dsitribution to serve static content from an S3 bucket (the origin). 
+
+Optionally users can configure the template to use a custom domain name. If a Route53 Hosted Zone ID is provded as a SAM parameter the template will edit that existing hosted zone, otherwise a new hosted zone will be created. An ACM certificate is created for the custom domain name which edits the hosted zone to add an Alias record for the CloudFront distribution.
 
 CloudWatch Internet Monitor is used to monitor the health of the domain name. If the domain name does not respond to a request 3 times, the CloudWatch Internet Monitor will trigger an alarm. 
 
-Although a frontend application is not included in the frontend starter 
+A HTML file is included in the `frontend` directory to show how a site can be deployed to the S3 bucket. This file can be uploaded to the site's S3 bucket using the `deploy.sh` script.
 
 ## Requirements 
 
@@ -39,57 +40,51 @@ Although a frontend application is not included in the frontend starter
 
 Using AWS Certificate Manager with a CloudFront distributions requires that the [stack be deployed in the `us-east-1` region](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cnames-and-https-requirements.html). Since CloudFront is a global service, the distribution will be available in all regions and performant for users in all regions, for this reason the SAM template **must** be deployed in the `us-east-1` region
 
-## Setup process
+
+## Setting up a project from the template
+
 1. Initialise the project using the AWS SAM CLI
-```bash 
+
+```bash
 sam init --location https://github.com/fourTheorem/static-site-starter.git
 # You will now be prompted to set cookiecutter template values
 # Please provide values for the following parameters:
-#   project_name [your project name]:
-#   project_description [Project description]:
-cd <your project name> 
+# project_name [your project name]:
+# project_description [Project description]:
+
 ```
-
-2. Build and deploy the SAM template
-```bash
-## package the template
-`sam build`
-
-## Deploy the template
-## This will prompt you to add CloudFormation parameters
-`sam deploy --guided`
-```
-
-3. Build your frontend application in the `frontend` directory and make sure the build files are in the `/frontend/dist`. 
-
-
-This starter template can host any static websites or single page applications (like React). For examples on setting up a frontend using a framework such as React or Vue, you can view the [Vite Docs](https://vitejs.dev/guide/).
-
-4. Deploy your frontend to the S3 bucket
-```bash
-chmod +x deploy.sh
-./deploy.sh
-```
-
-This script assumes that your frontend build files are in the `/frontend/dist` directory. If your frontend build files are in a different directory, you can edit the `deploy.sh` script to point to the correct directory.
-
 
 ## Deploying the application
 
-To build and deploy your application for the first time, run the following in your shell:
+To build and deploy the application after setting up a project from the template:
 
 ```bash
-cd sam 
+cd <your project name>
+## package the template
 sam build
+
+## Deploy the template
+## This will prompt you to add CloudFormation parameters
 sam deploy --guided
 ```
 
+## Deploy site to S3 bucket 
+
+```bash
+chmod +x deploy.sh
+./deploy.sh
+# You will be prompted to select an action, choose option 3 to Upload static files to the S3 site bucket
+```
+
+The starter comes with a simple Hello World `index.html` page in the frontend directory, but it can serve any static website or single page application (like React). For examples on setting up a frontend using a framework such as React or Vue, you can view the [Vite Docs](https://vitejs.dev/guide/).
+
+The `deploy.sh` assumes that your frontend build files are in the `/frontend` directory. If your frontend build files are in a different directory, you can edit the `deploy.sh` script to point to the correct directory.
 
 ## Remove application
 
 ```bash
 cd sam 
-sam remove --stack-name <stackName>
+sam delete --stack-name <stackName>
 ```
 
 # Costs
@@ -103,7 +98,7 @@ https://calculator.aws/#/estimate?id=dcf37a539e4761fa0af292a5858f17c1967275bf
 
 ## Deploying an application without a custom domain name 
 This is the simplest way to deploy an application.
-![minimal architecture diagram](architecture-diagrams/minimal.png)
+![minimal architecture diagram](/%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/minimal.png)
 
 
 1. Set the CloudFormation parameters 'DomainName', 'ACMCertificateArn', and 'ExistingHostedZoneID' to empty strings
@@ -112,7 +107,7 @@ This is the simplest way to deploy an application.
 
 
 ## Deploying an application using a DNS hosted zone that is not managed by Route53
-![external dns architecture diagram](architecture-diagrams/external-dns.png)
+![external dns architecture diagram](/%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/external-dns.png)
 
 1. Set the CloudFormation parameter 'DomainName' to the subdomain of your app (eg. 'example.com')
 2. Set the CloudFormation parameters 'ACMCertificateArn' and 'ExistingHostedZoneID' to empty strings
@@ -130,13 +125,13 @@ These changes will take a few minutes to propagate, then you should be able to a
 
 ## Deploying your application as a subdomain where the apex domain name hosted zone is managed by a 3rd party registrar
 
-![subdomain architecture diagram](architecture-diagrams/subdomain-external-dns.png)
+![subdomain architecture diagram](./%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/subdomain-external-dns.png)
 
 
 1. Set the CloudFormation parameter 'DomainName' to the subdomain of your app (eg. 'subdomain.example.com')
 2. Deploy the template
-2. Log into the DNS registrar for the apex domain name
-3. Create a CNAME record for the subdomain that points to the CloudFront distribution url (this is an output of the CloudFormation stack)
+3. Log into the DNS registrar for the apex domain name
+4. Create a CNAME record for the subdomain that points to the CloudFront distribution url (this is an output of the CloudFormation stack)
 
 The new record's values should look like this:
 ```
