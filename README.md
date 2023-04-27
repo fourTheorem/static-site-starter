@@ -25,9 +25,9 @@ project-root/
 ![Static site starter architecture diagram](./%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/architecture.png)
 
 
-The template provisions a CloudFront dsitribution to serve static content from an S3 bucket (the origin). 
+The template provisions a CloudFront distribution to serve static content from an S3 bucket (the origin). 
 
-Optionally users can configure the template to use a custom domain name. If a Route53 Hosted Zone ID is provded as a SAM parameter the template will edit that existing hosted zone, otherwise a new hosted zone will be created. An ACM certificate is created for the custom domain name which edits the hosted zone to add an Alias record for the CloudFront distribution.
+Optionally users can configure the template to use a custom domain name. If a Route53 Hosted Zone ID is provided as a SAM parameter the template will edit that existing hosted zone, otherwise a new hosted zone will be created. An ACM certificate is created for the custom domain name which edits the hosted zone to add an Alias record for the CloudFront distribution.
 
 CloudWatch Internet Monitor is used to monitor the health of the domain name. If the domain name does not respond to a request 3 times, the CloudWatch Internet Monitor will trigger an alarm. 
 
@@ -92,7 +92,7 @@ When using this template, you will be billed depending on the number of requests
 
 It is worth noting that CloudWatch Internet Monitor is the most expensive service by far for hosting a small site. 
 
-Here is a sample cost estimate for a website with 1GB of static assets that recieves 1000 views per month:
+Here is a sample cost estimate for a website with 1GB of static assets that receives 1000 views per month:
 https://calculator.aws/#/estimate?id=dcf37a539e4761fa0af292a5858f17c1967275bf
 
 
@@ -116,7 +116,7 @@ This is the simplest way to deploy an application.
 5. Create a new CNAME record for the domain name that points to the CloudFront distribution url (this is an output of the CloudFormation stack)
 6. Validate the domain name:
   - Go to the ACM console after the stack has been deployed
-  - Localte a newly creatd certificate for the domain name
+  - Locate a newly created certificate for the domain name
   - Click the 'Actions' button and select 'Validate certificate'
   - Follow the instructions to validate the domain name manually
 
