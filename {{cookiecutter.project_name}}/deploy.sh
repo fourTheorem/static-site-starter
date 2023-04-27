@@ -22,6 +22,18 @@ function clean_up() {
     # Delete S3 bucket contents
     aws s3 rm s3://${S3_BUCKET_NAME} --recursive
 
+    # Delete S3 bucket
+    aws s3 rb s3://${S3_BUCKET_NAME} --force
+
+    while true; do
+        read -p "Please delete the CNAME and A records in your Route53 hosted zone that were added by the stack in order to delete the hosted zone. Continue? (y): " user_input
+        if [ "$user_input" = "y" ] || [ "$user_input" = "Y" ]; then
+            break
+        else
+            echo "Enter 'y' or 'Y' to confirm you've deleted the CNAME record and proceed with the cleanup."
+        fi
+    done
+
     # Delete the stack using sam delete
     sam delete --stack-name ${STACK_NAME} --region us-east-1
 }
