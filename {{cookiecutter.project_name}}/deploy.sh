@@ -1,7 +1,7 @@
 #!/bin/bash
-AWS_REGION=us-east-1
-AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-S3_BUCKET_NAME="site-${AWS_ACCOUNT_ID}-${AWS_REGION}"
+export AWS_REGION=us-east-1
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+export S3_BUCKET_NAME="site-${AWS_ACCOUNT_ID}-${AWS_REGION}"
 
 echo "AWS Account ID: ${AWS_ACCOUNT_ID}"
 echo "AWS Region: ${AWS_REGION}"
