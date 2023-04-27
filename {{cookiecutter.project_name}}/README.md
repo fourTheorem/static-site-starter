@@ -132,6 +132,14 @@ These changes will take a few minutes to propagate, then you should be able to a
 
 1. Set the CloudFormation parameter 'DomainName' to the subdomain of your app (eg. 'subdomain.example.com')
 2. Deploy the template
+3. In the CloudFormation console click on the 'Events' tab and wait for the certificate resource to be created. The status of this resource will have a message in the following structure: "Content of DNS Record is: {Name: _abc.subdomain.example.com,Type: CNAME,Value: _abc.abc.acm-validations.aws.}". This is the DNS record that needs to be added to the apex domain name's hosted zone in the following form:
+
+```
+Name: _111abcdef.subdomain.example.com
+Type: CNAME
+Value: _abc.111abcdef.acm-validations.aws.
+```
+
 3. Log into the DNS registrar for the apex domain name
 4. Create a CNAME record for the subdomain that points to the CloudFront distribution url (this is an output of the CloudFormation stack)
 
@@ -139,6 +147,6 @@ The new record's values should look like this:
 ```
 Name: subdomain.example.com
 Type: CNAME
-Value: dxxxxxxxxxxxxx.cloudfront.net
+Value: d111111abcdef.cloudfront.net
 ```
 These changes will take a few minutes to propagate, then you should be able to access the website at `subdomain.example.com` when you deploy your site to the S3 frontend bucket.
