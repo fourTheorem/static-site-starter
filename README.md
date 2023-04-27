@@ -106,7 +106,7 @@ This is the simplest way to deploy an application.
 3. Access the website at the CloudFront distribution url outputted from the CloudFormation stack
 
 
-## Deploying an application using a DNS hosted zone that is not managed by Route53
+## Deploying an application using a domain name that is not managed by Route53
 ![external dns architecture diagram](/%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/external-dns.png)
 
 1. Set the CloudFormation parameter 'DomainName' to the subdomain of your app (eg. 'example.com')
@@ -123,7 +123,7 @@ This is the simplest way to deploy an application.
 
 These changes will take a few minutes to propagate, then you should be able to access the website at `example.com` when you deploy your site to the S3 frontend bucket.
 
-## Deploying your application as a subdomain where the apex domain name hosted zone is managed by a 3rd party registrar
+## Deploying your application as a subdomain where the apex domain nameserver managed by a 3rd party registrar
 
 ![subdomain architecture diagram](./%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/subdomain-external-dns.png)
 
