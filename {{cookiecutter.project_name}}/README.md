@@ -2,11 +2,13 @@
 
 {{ cookiecutter.project_description }}
 
-The project includes an [AWS SAM](https://aws.amazon.com/serverless/sam/) template that configures an S3 bucket with a CloudFront distribution to serve static content. The project also includes scripts to deploy, update, and delete the application stack. 
+The project includes an [AWS SAM](https://aws.amazon.com/serverless/sam/) template that configures an S3 bucket with a CloudFront distribution to serve static content. The project also includes a script to deploy, update, and delete the application stack. 
+
+The template uses [cookiecutter](https://cookiecutter.readthedocs.io/en/stable/) to allow users to easily create a new project using this template.
 
 
 ## Project structure 
-The project is laid out with the all files in the root directory, but it is recommended that you add your frontend application source code and build directory to a `frontend` subdirectory.
+The project is laid out with the all files in the {{cookiecutter.project_name}} directory, which will be renamed to your project's name when you create a new project using the `sam init` command.
 
 ```
 project-root/
@@ -58,22 +60,20 @@ sam init --location https://github.com/fourTheorem/static-site-starter.git
 
 ## Deploying the application
 
-To build and deploy the application after setting up a project from the template:
+To build and deploy the application after setting up a project from the template, simply run the provided deploy.sh script:
 
 ```bash
 cd <your project name>
-## package the template
-sam build
-
-## Deploy the template
-## This will prompt you to add CloudFormation parameters
-sam deploy --guided
+chmod +x deploy.sh
+./deploy.sh
+# You will be prompted to select an action, choose option 1 to Validate, build, and deploy the SAM template
 ```
 
 ## Deploy site to S3 bucket 
 
+To upload your static files to the S3 site bucket, run the deploy.sh script again:
+
 ```bash
-chmod +x deploy.sh
 ./deploy.sh
 # You will be prompted to select an action, choose option 3 to Upload static files to the S3 site bucket
 ```
@@ -83,10 +83,12 @@ The starter comes with a simple Hello World `index.html` page in the frontend di
 The `deploy.sh` assumes that your frontend build files are in the `/frontend` directory. If your frontend build files are in a different directory, you can edit the `deploy.sh` script to point to the correct directory.
 
 ## Remove application
+To remove the application, use the deploy.sh script once more:
 
 ```bash
-cd sam 
-sam delete --stack-name <stackName>
+./deploy.sh
+# You will be prompted to select an action, choose option 3 to Clean up - Delete S3 bucket contents and delete the stack
+# Then enter your stack name when prompted
 ```
 
 # Costs
@@ -102,26 +104,23 @@ https://calculator.aws/#/estimate?id=dcf37a539e4761fa0af292a5858f17c1967275bf
 This is the simplest way to deploy an application.
 ![minimal architecture diagram](/%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/minimal.png)
 
-
-1. Set the CloudFormation parameters 'DomainName', 'ACMCertificateArn', and 'ExistingHostedZoneID' to empty strings
-2. Deploy the stack 
+1. Run `./deploy.sh` and select option 1 to validate, build, and deploy the SAM template
+2. When prompted set the CloudFormation parameters 'DomainName', 'ACMCertificateArn', and 'ExistingHostedZoneID' to empty strings (just hit enter)
 3. Access the website at the CloudFront distribution url outputted from the CloudFormation stack
-
 
 ## Deploying an application using a domain name that is not managed by Route53
 ![external dns architecture diagram](/%7B%7Bcookiecutter.project_name%7D%7D/architecture-diagrams/external-dns.png)
 
-1. Set the CloudFormation parameter 'DomainName' to the subdomain of your app (eg. 'example.com')
-2. Set the CloudFormation parameters 'ACMCertificateArn' and 'ExistingHostedZoneID' to empty strings
-3. Deploy the template
-4. Log into the DNS registrar to access the domain name's hosted zone
+1. Run `./deploy.sh` and select option 1 to validate, build, and deploy the SAM template
+2. When prompted set the parameter 'DomainName' to the subdomain of your app (eg. 'example.com')
+3. Set the parameters 'ACMCertificateArn' and 'ExistingHostedZoneID' to empty strings
+4. Login to the DNS registrar to access the domain name's hosted zone
 5. Create a new CNAME record for the domain name that points to the CloudFront distribution url (this is an output of the CloudFormation stack)
 6. Validate the domain name:
   - Go to the ACM console after the stack has been deployed
   - Locate a newly created certificate for the domain name
   - Click the 'Actions' button and select 'Validate certificate'
   - Follow the instructions to validate the domain name manually
-
 
 These changes will take a few minutes to propagate, then you should be able to access the website at `example.com` when you deploy your site to the S3 frontend bucket.
 

@@ -1,10 +1,12 @@
 # Static site starter 
 
-The project includes an [AWS SAM](https://aws.amazon.com/serverless/sam/) template that configures an S3 bucket with a CloudFront distribution to serve static content. The project also includes scripts to deploy, update, and delete the application stack. 
+The project includes an [AWS SAM](https://aws.amazon.com/serverless/sam/) template that configures an S3 bucket with a CloudFront distribution to serve static content. The project also includes a script to deploy, update, and delete the application stack. 
+
+The template uses [cookiecutter](https://cookiecutter.readthedocs.io/en/stable/) to allow users to easily create a new project using this template.
 
 
 ## Project structure 
-The project is laid out with the all files in the root directory, but it is recommended that you add your frontend application source code and build directory to a `frontend` subdirectory.
+The project is laid out with the all files in the {{cookiecutter.project_name}} directory, which will be renamed to your project's name when you create a new project using the `sam init` command.
 
 ```
 project-root/
