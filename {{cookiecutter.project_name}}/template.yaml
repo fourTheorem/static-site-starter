@@ -60,19 +60,11 @@ Resources:
             Action: 's3:GetObject'
             Resource:
               - !Sub ${S3Bucket.Arn}/*
-            # Principal:
-            #   AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}"
             Principal:
               Service: cloudfront.amazonaws.com
             Condition:
               StringEquals:
                 AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistribution}
-
-  # CloudFrontOriginAccessIdentity:
-  #   Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
-  #   Properties:
-  #     CloudFrontOriginAccessIdentityConfig:
-  #       Comment: 'Serverless website OA'
 
   CloudFrontOriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
