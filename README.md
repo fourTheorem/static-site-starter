@@ -56,22 +56,20 @@ sam init --location https://github.com/fourTheorem/static-site-starter.git
 
 ## Deploying the application
 
-To build and deploy the application after setting up a project from the template:
+To build and deploy the application after setting up a project from the template, simply run the provided deploy.sh script:
 
 ```bash
 cd <your project name>
-## package the template
-sam build
-
-## Deploy the template
-## This will prompt you to add CloudFormation parameters
-sam deploy --guided
+chmod +x deploy.sh
+./deploy.sh
+# You will be prompted to select an action, choose option 1 to Validate, build, and deploy the SAM template
 ```
 
 ## Deploy site to S3 bucket 
 
+To upload your static files to the S3 site bucket, run the deploy.sh script again:
+
 ```bash
-chmod +x deploy.sh
 ./deploy.sh
 # You will be prompted to select an action, choose option 3 to Upload static files to the S3 site bucket
 ```
@@ -81,10 +79,14 @@ The starter comes with a simple Hello World `index.html` page in the frontend di
 The `deploy.sh` assumes that your frontend build files are in the `/frontend` directory. If your frontend build files are in a different directory, you can edit the `deploy.sh` script to point to the correct directory.
 
 ## Remove application
+To remove the application, use the deploy.sh script once more:
 
 ```bash
-cd sam 
-sam delete --stack-name <stackName>
+./deploy.sh
+# You will be prompted to select an action, choose option 3 to Clean up - Delete S3 bucket contents and delete the stack
+# Then enter your stack name when prompted
+```
+
 ```
 
 # Costs
