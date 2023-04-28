@@ -192,21 +192,5 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-##### TEMP #####
-frontend
-
-# Ignore frontend/dist
-frontend/dist
-
 # Ignore sam/package.yaml 
 sam/packaged.yaml
-
-# Ignore top level tsconfig file (for VSCode config)
-tsconfig.json
-
-# Ignore setup script (dev)
-setup.sh
-
-# Ignore zipped cookiecutter template
-{{cookiecutter.project_name}}.zip
-
