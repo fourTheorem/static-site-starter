@@ -1,0 +1,151 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 
+  - AWS::Serverless-2016-10-31
+Description: >
+  {{ cookiecutter.project_name }}
+
+  {{ cookiecutter.project_description }}
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: ''
+    Description: 'Custom domain name for the website, e.g. www.example.com'
+  ACMCertificateArn:
+    Type: String
+    Default: ''
+    Description: 'ARN of an existing ACM certificate for the custom domain name. If you already have a certificate in ACM, you can use it here. If you leave this field empty, a new certificate will be created for you.'
+  ExistingHostedZoneID:
+    Type: String
+    Default: ''
+    Description: 'Hosted Zone ID of an existing domain name. If you already have a hosted zone in Route53, you can use it here. If you leave this field empty, a new hosted zone will be created for you.'
+
+Conditions:
+  UseCustomDomain: !Not [!Equals [!Ref DomainName, '']]
+  IsExistingHostedZoneIdEmpty: !Equals [!Ref ExistingHostedZoneID, '']
+  IsACMCertificateArnEmpty: !Equals [!Ref ACMCertificateArn, '']
+  CreateCertificate: !And [!Condition UseCustomDomain, !Condition IsACMCertificateArnEmpty]
+
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub 'site-${AWS::AccountId}-${AWS::Region}'
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Statement:
+          -
+            Effect: Allow
+            Action: 's3:GetObject'
+            Resource:
+              - !Sub ${S3Bucket.Arn}/*
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistribution}
+
+  CloudFrontOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties: 
+      OriginAccessControlConfig:
+        Name: !Ref AWS::StackName
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  CloudfrontDistribution:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        Comment: "Cloudfront distribution for serverless website"
+        DefaultRootObject: "index.html"
+        Enabled: true
+        HttpVersion: http2
+        Aliases: !If
+          - UseCustomDomain
+          - - !Ref DomainName
+          - !Ref AWS::NoValue
+        ViewerCertificate: !If
+          - UseCustomDomain
+          - AcmCertificateArn: !If [IsACMCertificateArnEmpty, !Ref Certificate, !Ref ACMCertificateArn]
+            SslSupportMethod: sni-only
+          - !Ref AWS::NoValue
+        Origins:
+          - Id: s3-website
+            DomainName: !GetAtt S3Bucket.DomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
+        DefaultCacheBehavior:
+          Compress: 'true'
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          ForwardedValues:
+            QueryString: false
+          TargetOriginId: s3-website
+          ViewerProtocolPolicy : redirect-to-https
+    
+  DomainHostedZone:
+    Type: AWS::Route53::HostedZone
+    Condition: UseCustomDomain
+    Properties:
+      Name: !Sub '${DomainName}.'
+
+  Route53RecordSet:
+    Type: "AWS::Route53::RecordSet"
+    Condition: UseCustomDomain
+    Properties:
+      HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref DomainHostedZone, !Ref ExistingHostedZoneID]
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        HostedZoneId: Z2FDTNDATAQYW2
+        DNSName: !GetAtt CloudfrontDistribution.DomainName
+  
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Condition: CreateCertificate 
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Sub '${DomainName}'
+          HostedZoneId: !If [IsExistingHostedZoneIdEmpty, !Ref DomainHostedZone, !Ref ExistingHostedZoneID]
+
+  InternetMonitor:
+    Type: AWS::InternetMonitor::Monitor
+    Properties:
+      MaxCityNetworksToMonitor: 100
+      MonitorName: site-monitor
+      Resources:
+        - !Sub arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudfrontDistribution.Id}
+      Status: ACTIVE
+
+Outputs:
+  CloudfrontDistribution:
+    Description: 'Cloudfront Domain Name'
+    Value: !GetAtt CloudfrontDistribution.DomainName
